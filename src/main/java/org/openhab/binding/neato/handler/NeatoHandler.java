@@ -48,7 +48,7 @@ public class NeatoHandler extends BaseThingHandler {
 
     private BigDecimal refreshTime;
     private ScheduledFuture<?> refreshTask;
-    private static BigDecimal DEFAULTREFRESHTIME = new BigDecimal(1.0);
+    private static BigDecimal DEFAULTREFRESHTIME = new BigDecimal(60.0);
 
     public NeatoHandler(Thing thing) {
         super(thing);
@@ -162,7 +162,7 @@ public class NeatoHandler extends BaseThingHandler {
             }
         };
 
-        this.refreshTask = scheduler.scheduleAtFixedRate(refresher, 0, refreshTime.intValue(), TimeUnit.MINUTES);
+        this.refreshTask = scheduler.scheduleAtFixedRate(refresher, 0, refreshTime.intValue(), TimeUnit.SECONDS);
         logger.debug("Start automatic refresh at {} minutes", refreshTime.intValue());
     }
 
