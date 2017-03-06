@@ -11,9 +11,10 @@ package org.openhab.binding.neato.config;
  * Parameters used for bridge configuration.
  *
  * @author Patrik WImnell
- *
+ * @author Florian Dietrich - Vendor added
  */
 public class NeatoBridgeConfig {
     public String email; // serial port the gateway is attached to
     public String password; // ip address the gateway is attached to
+    public String vendor; // Vendor for your robot. Only Neato and Vorwerk are currently supported
 }

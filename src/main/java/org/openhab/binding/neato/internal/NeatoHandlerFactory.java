@@ -25,6 +25,7 @@ import org.osgi.service.component.ComponentContext;
  * handlers.
  *
  * @author Patrik Wimnell - Initial contribution
+ * @author Florian Dietrich - Vendor added
  */
 public class NeatoHandlerFactory extends BaseThingHandlerFactory {
 
@@ -32,6 +33,7 @@ public class NeatoHandlerFactory extends BaseThingHandlerFactory {
 
     public static String email;
     public static String password;
+    public static String vendor;
 
     @Override
     public boolean supportsThingType(ThingTypeUID thingTypeUID) {
@@ -57,6 +59,7 @@ public class NeatoHandlerFactory extends BaseThingHandlerFactory {
         Dictionary<String, Object> properties = componentContext.getProperties();
         email = (String) properties.get("email");
         password = (String) properties.get("password");
+        vendor = (String) properties.get("vendor");
 
     };
 }

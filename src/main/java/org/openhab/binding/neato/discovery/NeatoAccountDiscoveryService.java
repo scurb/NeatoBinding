@@ -20,6 +20,8 @@ import org.eclipse.smarthome.io.net.http.HttpUtil;
 import org.openhab.binding.neato.NeatoBindingConstants;
 import org.openhab.binding.neato.handler.NeatoHandler;
 import org.openhab.binding.neato.internal.NeatoHandlerFactory;
+import org.openhab.binding.neato.internal.Vendor;
+import org.openhab.binding.neato.internal.VendorFactory;
 import org.openhab.binding.neato.internal.classes.BeehiveAuthentication;
 import org.openhab.binding.neato.internal.classes.NeatoAccountInformation;
 import org.openhab.binding.neato.internal.classes.Robot;
@@ -28,6 +30,11 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 
+/**
+ *
+ * @author Florian Dietrich - Vendor added
+ *
+ */
 public class NeatoAccountDiscoveryService extends AbstractDiscoveryService {
 
     private static final Logger logger = LoggerFactory.getLogger(NeatoHandler.class);
@@ -42,7 +49,7 @@ public class NeatoAccountDiscoveryService extends AbstractDiscoveryService {
         this.accessToken = null;
     }
 
-    private String sendAuthRequestToNeato(String data) {
+    private String sendAuthRequestToNeato(String data, Vendor vendor) {
         // Properties headers = new Properties
         Properties headers = new Properties();
         headers.setProperty("Accept", "application/vnd.neato.nucleo.v1");
@@ -57,7 +64,7 @@ public class NeatoAccountDiscoveryService extends AbstractDiscoveryService {
 
             InputStream stream = new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8));
 
-            resultString = HttpUtil.executeUrl("POST", "https://beehive.neatocloud.com/sessions", headers, stream,
+            resultString = HttpUtil.executeUrl("POST", vendor.getBeehiveUrl() + "/sessions", headers, stream,
                     "application/json", 20000);
 
             logger.info(resultString);
@@ -72,7 +79,7 @@ public class NeatoAccountDiscoveryService extends AbstractDiscoveryService {
         return resultString;
     }
 
-    private Boolean authenticate(String username, String password) {
+    private Boolean authenticate(String username, String password, Vendor vendor) {
 
         String authenticationString;
         try {
@@ -85,7 +92,7 @@ public class NeatoAccountDiscoveryService extends AbstractDiscoveryService {
             return false;
         }
 
-        String authenticationResponse = sendAuthRequestToNeato(authenticationString);
+        String authenticationResponse = sendAuthRequestToNeato(authenticationString, vendor);
 
         logger.info("Authentication Response: {}", authenticationResponse);
 
@@ -97,7 +104,7 @@ public class NeatoAccountDiscoveryService extends AbstractDiscoveryService {
         return true;
     }
 
-    public Boolean sendGetRobots() {
+    public Boolean sendGetRobots(Vendor vendor) {
         // resp = requests.get(urljoin(self.ENDPOINT, 'dashboard'), headers=self._headers)
         // Properties headers = new Properties
         Properties headers = new Properties();
@@ -111,7 +118,7 @@ public class NeatoAccountDiscoveryService extends AbstractDiscoveryService {
 
         try {
 
-            resultString = HttpUtil.executeUrl("GET", "https://beehive.neatocloud.com/dashboard", headers, null,
+            resultString = HttpUtil.executeUrl("GET", vendor.getBeehiveUrl() + "/dashboard", headers, null,
                     "application/json", 20000);
 
             Gson gson = new Gson();
@@ -123,7 +130,7 @@ public class NeatoAccountDiscoveryService extends AbstractDiscoveryService {
 
             for (int i = 0; i < mrRobots.size(); i++) {
                 Robot mrRobot = accountInformation.getRobots().get(i);
-                addThing(mrRobot);
+                addThing(mrRobot, vendor);
             }
         } catch (UnsupportedEncodingException e) {
             // TODO Auto-generated catch block
@@ -138,11 +145,12 @@ public class NeatoAccountDiscoveryService extends AbstractDiscoveryService {
 
     public void getRobotsFromNeato() {
         if (NeatoHandlerFactory.email != null) {
-            authenticate(NeatoHandlerFactory.email, NeatoHandlerFactory.password);
+            authenticate(NeatoHandlerFactory.email, NeatoHandlerFactory.password,
+                    VendorFactory.createVendor(NeatoHandlerFactory.vendor));
         }
 
         if (this.accessToken != null) {
-            sendGetRobots();
+            sendGetRobots(VendorFactory.createVendor(NeatoHandlerFactory.vendor));
         }
 
     }
@@ -158,7 +166,7 @@ public class NeatoAccountDiscoveryService extends AbstractDiscoveryService {
         getRobotsFromNeato();
     }
 
-    private void addThing(Robot mrRobot) {
+    private void addThing(Robot mrRobot, Vendor vendor) {
         logger.trace("addThing(): Adding new Neato unit {} to the smarthome inbox", mrRobot.getName());
 
         ThingUID thingUID = null;
@@ -173,6 +181,7 @@ public class NeatoAccountDiscoveryService extends AbstractDiscoveryService {
         properties.put(NeatoBindingConstants.CONFIG_NAME, mrRobot.getName());
         properties.put(NeatoBindingConstants.CONFIG_SECRET, mrRobot.getSecretKey());
         properties.put(NeatoBindingConstants.CONFIG_SERIAL, mrRobot.getSerial());
+        properties.put(NeatoBindingConstants.CONFIG_VENDOR, vendor.toString());
 
         DiscoveryResult discoveryResult;
 
