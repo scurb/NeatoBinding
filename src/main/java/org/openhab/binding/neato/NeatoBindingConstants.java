@@ -14,6 +14,7 @@ import org.eclipse.smarthome.core.thing.ThingTypeUID;
  * used across the whole binding.
  *
  * @author Patrik Wimnell - Initial contribution
+ * @author Florian Dietrich - Vendor added
  */
 public class NeatoBindingConstants {
 
@@ -47,6 +48,7 @@ public class NeatoBindingConstants {
     public final static String CONFIG_SECRET = "secret";
     public final static String CONFIG_NAME = "name";
     public final static String CONFIG_SERIAL = "serial";
+    public final static String CONFIG_VENDOR = "vendor";
     public final static String CONFIG_REFRESHTIME = "refresh";
 
     public final static int NEATO_STATE_INVALID = 0;

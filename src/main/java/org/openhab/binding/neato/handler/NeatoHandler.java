@@ -27,6 +27,7 @@ import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
 import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.State;
 import org.openhab.binding.neato.internal.NeatoRobot;
+import org.openhab.binding.neato.internal.VendorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +36,7 @@ import org.slf4j.LoggerFactory;
  * sent to one of the channels.
  *
  * @author Patrik Wimnell - Initial contribution
+ * @author Florian Dietrich - Vendor added
  */
 public class NeatoHandler extends BaseThingHandler {
 
@@ -43,6 +45,7 @@ public class NeatoHandler extends BaseThingHandler {
     private String vacuumSerialNumber;
     private String vacuumSecret;
     private String vacuumName;
+    private String vendorName;
 
     private NeatoRobot mrRobot;
 
@@ -88,8 +91,9 @@ public class NeatoHandler extends BaseThingHandler {
         vacuumSecret = (String) config.get(CONFIG_SECRET);
         vacuumName = (String) config.get(CONFIG_NAME);
         vacuumSerialNumber = (String) config.get(CONFIG_SERIAL);
+        vendorName = (String) config.get(CONFIG_VENDOR);
 
-        logger.info("Got config settings for {} with serial number: {}", vacuumName, vacuumSecret);
+        logger.info("Got config settings for {}-{} with serial number: {}", vendorName, vacuumName, vacuumSecret);
 
         super.initialize();
 
@@ -104,7 +108,7 @@ public class NeatoHandler extends BaseThingHandler {
             refreshTime = DEFAULTREFRESHTIME;
         }
 
-        mrRobot = new NeatoRobot(vacuumSerialNumber, vacuumSecret, vacuumName);
+        mrRobot = new NeatoRobot(vacuumSerialNumber, vacuumSecret, vacuumName, VendorFactory.createVendor(vendorName));
         try {
             if (mrRobot.sendGetState()) {
                 // Long running initialization should be done asynchronously in background.

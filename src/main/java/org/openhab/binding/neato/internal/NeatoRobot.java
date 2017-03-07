@@ -14,7 +14,6 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Hex;
 import org.eclipse.smarthome.core.types.Command;
-import org.eclipse.smarthome.io.net.http.HttpUtil;
 import org.openhab.binding.neato.handler.NeatoHandler;
 import org.openhab.binding.neato.internal.classes.NeatoGeneralInfo;
 import org.openhab.binding.neato.internal.classes.NeatoRobotInfo;
@@ -29,15 +28,19 @@ import com.google.gson.Gson;
  * used across the whole binding.
  *
  * @author Patrik Wimnell - Initial contribution
+ * @author Florian Dietrich - Vendor added
  */
 
 public class NeatoRobot {
 
     private static final Logger logger = LoggerFactory.getLogger(NeatoHandler.class);
 
+    private static final String HTTP_ACCEPT = "application/vnd.neato.nucleo.v1";
+
     private String serialNumber;
     private String secret;
     private String name;
+    private Vendor vendor;
 
     private NeatoState state;
     private NeatoRobotInfo info;
@@ -59,17 +62,18 @@ public class NeatoRobot {
         return this.name;
     }
 
-    public NeatoRobot(String _serial, String _secret, String _name) {
+    public NeatoRobot(String _serial, String _secret, String _name, Vendor _vendor) {
         this.serialNumber = _serial;
         this.secret = _secret;
         this.name = _name;
-
+        this.vendor = _vendor;
         this.state = null;
         this.info = null;
         this.generalInfo = null;
     }
 
     public String callNeatoWS(String body) throws Exception {
+        logger.debug("Request body: {}", body);
         SimpleDateFormat dateFormatGmt = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
         dateFormatGmt.setTimeZone(TimeZone.getTimeZone("GMT"));
 
@@ -93,10 +97,17 @@ public class NeatoRobot {
 
         InputStream stream = new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8));
 
-        String result = HttpUtil.executeUrl("POST",
-                "https://nucleo.neatocloud.com:4443/vendors/neato/robots/" + this.serialNumber + "/messages", headers,
-                stream, "text/html; charset=ISO-8859-1", 20000);
-
+        String url = String.format("%s/vendors/%s/robots/%s/messages", this.vendor.getNucleoUrl(),
+                this.vendor.toString(), this.serialNumber);
+        logger.debug("Request URL: {}", url);
+        String result = "";
+        try {
+            result = vendor.executeRequest("POST", url, headers, stream, "text/html; charset=UTF-8", 20000);
+            logger.debug("Response body: {}", result);
+        } catch (Exception e) {
+            logger.error("Error connection nucleo host: ", e);
+            throw e;
+        }
         return result;
     }
 

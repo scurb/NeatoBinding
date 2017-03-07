@@ -18,6 +18,12 @@
             <description>Password for your Neato Cloud account.</description>
             <required>true</required>
         </parameter>
+        <parameter name="vendor" type="text">
+            <label>Vendor</label>
+            <description>Vendor of your robot. Possible values are Neato or Vorwerk</description>
+            <required>true</required>
+            <default>Neato</default>
+        </parameter>
     </config-description>
 
 </binding:binding>
