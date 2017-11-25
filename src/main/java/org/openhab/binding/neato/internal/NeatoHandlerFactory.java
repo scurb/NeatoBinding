@@ -1,13 +1,12 @@
 /**
  * Copyright (c) 2014-2016 by the respective copyright holders.
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.neato.internal;
-
-import static org.openhab.binding.neato.NeatoBindingConstants.THING_TYPE_VACUUMCLEANER;
 
 import java.util.Collections;
 import java.util.Dictionary;
@@ -17,6 +16,7 @@ import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandlerFactory;
 import org.eclipse.smarthome.core.thing.binding.ThingHandler;
+import org.openhab.binding.neato.NeatoBindingConstants;
 import org.openhab.binding.neato.handler.NeatoHandler;
 import org.osgi.service.component.ComponentContext;
 
@@ -29,7 +29,8 @@ import org.osgi.service.component.ComponentContext;
  */
 public class NeatoHandlerFactory extends BaseThingHandlerFactory {
 
-    public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Collections.singleton(THING_TYPE_VACUUMCLEANER);
+    public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Collections
+            .singleton(NeatoBindingConstants.THING_TYPE_VACUUMCLEANER);
 
     public static String email;
     public static String password;
@@ -45,7 +46,7 @@ public class NeatoHandlerFactory extends BaseThingHandlerFactory {
 
         ThingTypeUID thingTypeUID = thing.getThingTypeUID();
 
-        if (thingTypeUID.equals(THING_TYPE_VACUUMCLEANER)) {
+        if (thingTypeUID.equals(NeatoBindingConstants.THING_TYPE_VACUUMCLEANER)) {
             return new NeatoHandler(thing);
         }
 

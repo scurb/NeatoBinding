@@ -1,13 +1,12 @@
 /**
  * Copyright (c) 2014-2016 by the respective copyright holders.
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.neato.handler;
-
-import static org.openhab.binding.neato.NeatoBindingConstants.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -26,6 +25,7 @@ import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
 import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.State;
+import org.openhab.binding.neato.NeatoBindingConstants;
 import org.openhab.binding.neato.internal.NeatoRobot;
 import org.openhab.binding.neato.internal.VendorFactory;
 import org.slf4j.Logger;
@@ -63,7 +63,7 @@ public class NeatoHandler extends BaseThingHandler {
 
     @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
-        if (channelUID.getId().equals(org.openhab.binding.neato.NeatoBindingConstants.COMMAND)) {
+        if (channelUID.getId().equals(NeatoBindingConstants.COMMAND)) {
             logger.debug("Ok - will handle command for CHANNEL_COMMAND");
             // TODO: handle command
 
@@ -88,17 +88,17 @@ public class NeatoHandler extends BaseThingHandler {
         // TODO: Initialize the thing. If done set status to ONLINE to indicate proper working.
 
         Configuration config = getThing().getConfiguration();
-        vacuumSecret = (String) config.get(CONFIG_SECRET);
-        vacuumName = (String) config.get(CONFIG_NAME);
-        vacuumSerialNumber = (String) config.get(CONFIG_SERIAL);
-        vendorName = (String) config.get(CONFIG_VENDOR);
+        vacuumSecret = (String) config.get(NeatoBindingConstants.CONFIG_SECRET);
+        vacuumName = (String) config.get(NeatoBindingConstants.CONFIG_NAME);
+        vacuumSerialNumber = (String) config.get(NeatoBindingConstants.CONFIG_SERIAL);
+        vendorName = (String) config.get(NeatoBindingConstants.CONFIG_VENDOR);
 
         logger.info("Got config settings for {}-{} with serial number: {}", vendorName, vacuumName, vacuumSecret);
 
         super.initialize();
 
         try {
-            refreshTime = (BigDecimal) config.get(CONFIG_REFRESHTIME);
+            refreshTime = (BigDecimal) config.get(NeatoBindingConstants.CONFIG_REFRESHTIME);
             if (refreshTime.intValue() <= 0) {
                 throw new IllegalArgumentException("Refresh time must be positive number!");
             }
@@ -125,7 +125,7 @@ public class NeatoHandler extends BaseThingHandler {
             // updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
             // "Can not access device as username and/or password are invalid");
 
-            logger.error(ex.getMessage());
+            logger.error("Error getting robot info");
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, ex.getMessage());
 
         }
@@ -160,7 +160,7 @@ public class NeatoHandler extends BaseThingHandler {
 
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
-                    logger.error(e.getMessage());
+                    logger.error("Error refreshing state");
                 }
 
             }
@@ -177,28 +177,28 @@ public class NeatoHandler extends BaseThingHandler {
             logger.debug("Yes, channel is linked. Will publish updates!");
             State state = null;
             switch (channelID) {
-                case CHANNEL_BATTERY:
+                case NeatoBindingConstants.CHANNEL_BATTERY:
                     state = new DecimalType(mrRobot.getState().getDetails().getCharge());
                     break;
-                case CHANNEL_STATE:
+                case NeatoBindingConstants.CHANNEL_STATE:
                     state = new StringType(mrRobot.getState().getStateString().toString());
                     break;
-                case CHANNEL_VERSION:
+                case NeatoBindingConstants.CHANNEL_VERSION:
                     state = new StringType(mrRobot.getState().getVersion().toString());
                     break;
-                case CHANNEL_ERROR:
+                case NeatoBindingConstants.CHANNEL_ERROR:
                     state = new StringType(mrRobot.getState().getError().toString());
                     break;
-                case CHANNEL_MODELNAME:
+                case NeatoBindingConstants.CHANNEL_MODELNAME:
                     state = new StringType(mrRobot.getState().getMeta().getModelName().toString());
                     break;
-                case CHANNEL_FIRMWARE:
+                case NeatoBindingConstants.CHANNEL_FIRMWARE:
                     state = new StringType(mrRobot.getState().getMeta().getFirmware().toString());
                     break;
-                case CHANNEL_ACTION:
+                case NeatoBindingConstants.CHANNEL_ACTION:
                     state = new StringType(mrRobot.getState().getActionString().toString());
                     break;
-                case CHANNEL_DOCKHASBEENSEEN:
+                case NeatoBindingConstants.CHANNEL_DOCKHASBEENSEEN:
                     if (mrRobot.getState().getDetails().getDockHasBeenSeen()) {
                         state = OnOffType.ON;
                     } else {
@@ -208,7 +208,7 @@ public class NeatoHandler extends BaseThingHandler {
                 // case CHANNEL_AVAILABLECOMMANDS:
                 // state = new StringType(mrRobot.getState().getAvailableCommands().toString());
                 // break;
-                case CHANNEL_ISCHARGING:
+                case NeatoBindingConstants.CHANNEL_ISCHARGING:
                     if (mrRobot.getState().getDetails().getIsCharging()) {
                         state = OnOffType.ON;
                     } else {
@@ -216,36 +216,36 @@ public class NeatoHandler extends BaseThingHandler {
                     }
 
                     break;
-                case CHANNEL_ISSCHEDULED:
+                case NeatoBindingConstants.CHANNEL_ISSCHEDULED:
                     if (mrRobot.getState().getDetails().getIsScheduleEnabled()) {
                         state = OnOffType.ON;
                     } else {
                         state = OnOffType.OFF;
                     }
                     break;
-                case CHANNEL_ISDOCKED:
+                case NeatoBindingConstants.CHANNEL_ISDOCKED:
                     if (mrRobot.getState().getDetails().getIsDocked()) {
                         state = OnOffType.ON;
                     } else {
                         state = OnOffType.OFF;
                     }
                     break;
-                case CHANNEL_NAME:
+                case NeatoBindingConstants.CHANNEL_NAME:
                     state = new StringType(mrRobot.getName());
                     break;
-                case CHANNEL_CLEANINGCATEGORY:
+                case NeatoBindingConstants.CHANNEL_CLEANINGCATEGORY:
                     state = new StringType(mrRobot.getState().getCleaning().getCategoryString());
                     break;
-                case CHANNEL_CLEANINGMODE:
+                case NeatoBindingConstants.CHANNEL_CLEANINGMODE:
                     state = new StringType(mrRobot.getState().getCleaning().getModeString());
                     break;
-                case CHANNEL_CLEANINGMODIFIER:
+                case NeatoBindingConstants.CHANNEL_CLEANINGMODIFIER:
                     state = new StringType(mrRobot.getState().getCleaning().getModifierString());
                     break;
-                case CHANNEL_CLEANINGSPOTWIDTH:
+                case NeatoBindingConstants.CHANNEL_CLEANINGSPOTWIDTH:
                     state = new DecimalType(mrRobot.getState().getCleaning().getSpotWidth());
                     break;
-                case CHANNEL_CLEANINGSPOTHEIGHT:
+                case NeatoBindingConstants.CHANNEL_CLEANINGSPOTHEIGHT:
                     state = new DecimalType(mrRobot.getState().getCleaning().getSpotHeight());
                     break;
             }
