@@ -37,7 +37,7 @@ import com.google.gson.Gson;
  */
 public class NeatoAccountDiscoveryService extends AbstractDiscoveryService {
 
-    private static final Logger logger = LoggerFactory.getLogger(NeatoHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(NeatoHandler.class);
 
     private static final int TIMEOUT = 15;
     private SecureRandom random = new SecureRandom();

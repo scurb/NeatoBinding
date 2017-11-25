@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.openhab.io.net.http.HttpUtil;
+import org.eclipse.smarthome.io.net.http.HttpUtil;
 
 /**
  *
