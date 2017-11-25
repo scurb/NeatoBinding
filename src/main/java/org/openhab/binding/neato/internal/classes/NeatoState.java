@@ -1,9 +1,22 @@
+/**
+ * Copyright (c) 2014-2016 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.neato.internal.classes;
 
 import static org.openhab.binding.neato.NeatoBindingConstants.*;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+/**
+ * @author Patrik Wimnell - Initial contribution
+ * @author Florian Dietrich - Vendor added
+ */
 
 public class NeatoState {
 
@@ -69,7 +82,6 @@ public class NeatoState {
     }
 
     public String getError() {
-
         if (!error.equalsIgnoreCase("ui_alert_invalid")) {
             return error;
         } else {
@@ -97,19 +109,14 @@ public class NeatoState {
         switch (this.state) {
             case NEATO_STATE_INVALID:
                 return "INVALID";
-
             case NEATO_STATE_IDLE:
                 return "IDLE";
-
             case NEATO_STATE_BUSY:
                 return "BUSY";
-
             case NEATO_STATE_PAUSED:
                 return "PAUSED";
-
             case NEATO_STATE_ERROR:
                 return "ERROR";
-
         }
         return "NONE";
     }
@@ -123,11 +130,9 @@ public class NeatoState {
     }
 
     public String getActionString() {
-
         if (this.state == NEATO_STATE_IDLE || this.state == NEATO_STATE_ERROR) {
             return "";
         }
-
         switch (this.action) {
             case NEATO_ACTION_INVALID:
                 return "INVALID";

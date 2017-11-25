@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2014-2016 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.neato.discovery;
 
 import java.io.ByteArrayInputStream;
@@ -37,7 +45,7 @@ import com.google.gson.Gson;
  */
 public class NeatoAccountDiscoveryService extends AbstractDiscoveryService {
 
-    private static final Logger logger = LoggerFactory.getLogger(NeatoHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(NeatoHandler.class);
 
     private static final int TIMEOUT = 15;
     private SecureRandom random = new SecureRandom();
@@ -124,7 +132,7 @@ public class NeatoAccountDiscoveryService extends AbstractDiscoveryService {
             Gson gson = new Gson();
             NeatoAccountInformation accountInformation = gson.fromJson(resultString, NeatoAccountInformation.class);
 
-            logger.info(resultString);
+            logger.info("{}", resultString);
 
             List<Robot> mrRobots = accountInformation.getRobots();
 

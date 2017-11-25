@@ -1,5 +1,6 @@
 /**
  * Copyright (c) 2014-2016 by the respective copyright holders.
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.openhab.io.net.http.HttpUtil;
+import org.eclipse.smarthome.io.net.http.HttpUtil;
 
 /**
  *

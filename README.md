@@ -1,9 +1,3 @@
----
-layout: documentation
----
-
-{% include base.html %}
-
 # Neato Binding
 
 This binding is used to connect your openHAB 2 system with Neato web (where you log in and find Your Neato's). The binding supports discovery if configured with login and password. From the binding, you will get status of your vacuum cleaners and also a command channel where you can control them. Since the binding uses a polling mechanism, there may be some latency depending on your setting regarding refresh time. 
@@ -11,9 +5,7 @@ This binding is used to connect your openHAB 2 system with Neato web (where you 
 For log in transaction, the binding uses Neato Beehive API and for status and control, the binding uses Nucleao API. 
 
 
-
 ## Supported Things
-
 
 Vacuum cleaner is the only support thing of this binding. As of todays date, it is only verified with Neato Connected vacuum cleaner.
 
